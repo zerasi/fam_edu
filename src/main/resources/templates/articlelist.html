@@ -1,0 +1,141 @@
+<!doctype html>
+<html><!-- InstanceBegin template="/Templates/dwt.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<meta charset="utf-8">
+<!-- InstanceBeginEditable name="doctitle" -->
+<title>家教预约</title>
+<link rel="stylesheet" href="css/article.css">
+<link rel="stylesheet" href="css/course.css"/>
+<script src="js/jquery-1.8.0.min.js"></script>
+<script src="js/mine.js"></script>
+<!-- InstanceEndEditable -->
+<!-- InstanceBeginEditable name="head" -->
+<!-- InstanceEndEditable -->
+<script src="js/jquery-1.8.0.min.js"></script>
+</head>
+
+<body>
+
+<div class="head" id="fixed">
+	<div class="nav">
+    	<span class="navimg"><a href="jiajiao"><img border="0" src="images/logo.png"></a></span>
+        <ul class="nag">
+            <li><a href="teacherlist.html" class="link1">讲师</a></li>
+        	<li><a href="courselist.html" class="link1">课程</a></li>
+            <li><a href="articlelist.html" class="link1 current">已选课</a></li>
+            
+        </ul>
+       <span class="massage">
+        
+            <script type="text/javascript">
+            
+            	$(function(){
+            		$.post("user/zhanshi",function(data){
+            			if(data.success){
+            				var l = '<div class="logined"><a class="link2 he" onclick="logout()">退出</a><a href="#" style="width:70px" class="link2 he ico"> '+data.message+'</a> </div>'
+            				$(".massage").append(l);
+            				
+            				$.post("course/usercourse",function(res){
+            					$(".coursetext").empty();
+            					var inx = 1;
+            					$.each(res,function(i,v){
+            						inx = inx+1;
+            						var l = '<div class="articlelist"><h3><a class="artlink" >'+v.course.name+'</a></h3>';
+            						var l1 = '<p>'+v.course.content+'</p><p class="artilabel"><span class="ask_label" onclick="deletechoose('+v.id+')">删除</span><b class="labtime">'+v.course.teacher.realname+'</b></p><div class="clearh"></div></div>';
+            						$(".coursetext").append(l+l1);
+            					})
+            					var px=151*inx+50;
+								$(".coursetext").css("height",px+"px")
+            				})
+            			}else{
+            				alert("您还没有登录")
+            				var l = '<span class="exambtn_lore"><a class="tkbtn tklog" href="login.html">登录</a><a class="tkbtn tkreg" href="register.html">注册</a></span>'
+            				$(".massage").append(l);
+            			}
+            		})
+            	})
+            	function logout(){
+            		$.post("user/logout",function(data){
+            			if(data){
+            				location.href="jiajiao";
+            			}
+            		})
+            	}
+            	function deletechoose(id){
+            		$.post('course/deletechoose',{id:id},function(data){
+            			$.post("course/usercourse",function(res){
+        					$(".coursetext").empty();
+        					var inx = 1;
+        					$.each(res,function(i,v){
+        						inx = inx+1;
+        						var l = '<div class="articlelist"><h3><a class="artlink" >'+v.course.name+'</a></h3>';
+        						var l1 = '<p>'+v.course.content+'</p><p class="artilabel"><span class="ask_label" onclick="deletechoose('+v.id+')">删除</span><b class="labtime">'+v.teacher.realname+'</b></p><div class="clearh"></div></div>';
+        						$(".coursetext").append(l+l1);
+        					})
+        					var px=151*inx+50;
+							$(".coursetext").css("height",px+"px")
+        				})
+            		})
+            	}
+            </script>
+        </span>
+    </div>
+</div>
+<!-- InstanceBeginEditable name="EditRegion1" -->
+<div class="coursecont">
+<div class="coursetext" style="height: 100px;">
+	<!-- <div class="articlelist">
+    	<h3><a class="artlink" href="article.html" >2015年第一季度山西省会计从业资格考务日程安排</a></h3>
+        <p></p>
+        <p class="artilabel"><span class="ask_label">删除</span></p><div class="clearh"></div></div>
+        
+        <b class="labtime">2015-02-02</b>
+        
+        
+     -->
+</div>
+
+
+
+<div class="clearh"></div>
+</div>
+<!-- InstanceEndEditable -->
+
+
+<div class="clearh"></div>
+<div class="foot">
+<div class="fcontainer">
+      <div class="fwxwb"> 
+	       <div class="fwxwb_1">
+		       <span>关注微信</span><img width="95" alt="" src="images/num.png">
+		   </div>
+           <div>
+               <span>关注微博</span><img width="95" alt="" src="images/wb.png">
+		   </div>	              
+      </div>
+      <div class="fmenu">
+	     <p><a href="#">关于我们</a> | <a href="#">联系我们</a> | <a href="#">优秀讲师</a> | <a href="#">帮助中心</a> | <a href="#">意见反馈</a> | <a href="#">加入我们</a></p>
+      </div>
+      <div class="copyright">      
+        <div><a href="/">谋刻网</a>所有&nbsp;晋ICP备12006957号-9</div>
+      </div>
+    </div>
+</div>
+<!--右侧浮动-->
+<div class="rmbar">
+	<span class="barico qq" style="position:relative">
+	<div  class="showqq">
+	   <p>官方客服QQ:<br>335049335</p>
+	</div>
+	</span>
+	<span class="barico em" style="position:relative">
+	  <img src="images/num.png" width="75" class="showem">
+	</span>
+	<span class="barico wb" style="position:relative">
+	  <img src="images/wb.png" width="75" class="showwb">
+	</span>	
+	<span class="barico top" id="top">置顶</span>	
+</div>
+</body>
+
+<!-- InstanceEnd --></html>

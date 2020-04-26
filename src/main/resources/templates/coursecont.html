@@ -1,0 +1,154 @@
+<!doctype html>
+<html><!-- InstanceBegin template="/Templates/dwt.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<meta charset="utf-8">
+<!-- InstanceBeginEditable name="doctitle" -->
+<title>家教预约</title>
+<link rel="stylesheet" href="css/course.css"/>
+<script src="js/jquery-1.8.0.min.js"></script>
+<link rel="stylesheet" href="css/tab.css" media="screen">
+<script src="js/jquery.tabs.js"></script>
+<script src="js/mine.js"></script>
+<!-- InstanceEndEditable -->
+<!-- InstanceBeginEditable name="head" -->
+<!-- InstanceEndEditable -->
+
+</head>
+
+<body>
+
+<div class="head" id="fixed">
+	<div class="nav">
+    	<span class="navimg"><a href="index.html"><img border="0" src="images/logo.png"></a></span>
+         <ul class="nag">
+          <li><a href="teacherlist.html" class="link1">讲师</a></li>
+        	<li><a href="courselist.html" class="link1 current">课程</a></li>
+            <li><a href="articlelist.html" class="link1">已选课</a></li>
+        </ul>
+      <span class="massage">
+        
+            <script type="text/javascript">
+            
+            	$(function(){
+            		$.post("user/zhanshi",function(data){
+            			if(data.success){
+            				var l = '<div class="logined"><a class="link2 he" onclick="logout()">退出</a><a href="#" style="width:70px" class="link2 he ico"> '+data.message+'</a> </div>'
+            				$(".massage").append(l);
+            			}else{
+            				var l = '<span class="exambtn_lore"><a class="tkbtn tklog" href="login.html">登录</a><a class="tkbtn tkreg" href="register.html">注册</a></span>'
+            				$(".massage").append(l);
+            			}
+            		})
+            	})
+            	function logout(){
+            		$.post("user/logout",function(data){
+            			if(data){
+            				location.href="jiajiao";
+            			}
+            		})
+            	}
+            	function xuanke(){
+            		$.post("user/zhanshi",function(data){
+            			if(data.success){
+            				var id = location.search.split("=")[1];
+            				$.post("course/xuanke",{id:id},function(data){
+            					alert(data.message);
+            				})
+            			}else{
+            				alert("您还没有登录！")
+            			}
+            		})
+            	}
+            </script>
+        </span>
+    </div>
+</div>
+<!-- InstanceBeginEditable name="EditRegion1" -->
+<div class="coursecont">
+<div class="coursepic">
+	<div class="course_img"><img src="images/box1.jpg" width="500"></div>
+    <div class="coursetitle">
+   		<a class="state">更新中</a>
+    	<h2 class="courseh2" th:text="${course.name}">会计基础</h2>    
+		<p class="courstime" th:text="'讲师：'+${course.teacher.realname}"></p>
+        <p class="courstime" th:text="'课程价格：'+${course.price}"></p>
+		<p class="courstime">课程评价：<img width="71" height="14" src="images/evaluate5.png">&nbsp;&nbsp;<span class="hidden-sm hidden-xs">5.0分（10人评价）</span></p>
+        <!--<p><a class="state end">完结</a></p>-->      
+        <span class="coursebtn"><a class="btnlink" href="javascript:void(0)" onclick="xuanke()" id="xuanke">加入学习</a></span> 
+		<div style="clear:both;"></div>
+		<div id="bds">
+            <div class="bdsharebuttonbox">
+				<a title="分享到QQ空间" href="#" class="bds_qzone" data-cmd="qzone"></a>
+				<a title="分享到新浪微博" href="#" class="bds_tsina" data-cmd="tsina"></a>
+				<a title="分享到腾讯微博" href="#" class="bds_tqq" data-cmd="tqq"></a>
+				<a title="分享到人人网" href="#" class="bds_renren" data-cmd="renren"></a>
+				<a title="分享到微信" href="#" class="bds_weixin" data-cmd="weixin"></a>
+				<a href="#" class="bds_more" data-cmd="more"></a>
+				<a class="bds_count" data-cmd="count"></a>
+			</div>
+            <script>
+			window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"分享到：","viewSize":"24"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+			</script>
+       </div>
+    </div>
+    <div class="clearh"></div>
+</div>
+
+<div class="clearh"></div>
+<div class="coursetext">
+	<h3 class="leftit">课程简介</h3>
+    <p class="coutex" th:text="${course.content}"></p>
+	<div class="clearh"></div>
+	<!-- <h3 class="leftit">课程目录</h3>
+    <dl class="mulu">
+    	<dt><a href="#" class="graylink">第二章&nbsp;&nbsp;会计要素与会计等式</a></dt>
+        <dd>内容包括会计基础、财经法规和职业道德、电算化三科视频课程全系列。内容包括会计基础、财经法规和职业道德、电算化三科视频课程全系列</dd>
+    </dl> -->
+</div>
+
+
+
+
+
+<div class="clearh"></div>
+</div>
+<!-- InstanceEndEditable -->
+
+
+<div class="clearh"></div>
+<div class="foot">
+<div class="fcontainer">
+      <div class="fwxwb"> 
+	       <div class="fwxwb_1">
+		       <span>关注微信</span><img width="95" alt="" src="images/num.png">
+		   </div>
+           <div>
+               <span>关注微博</span><img width="95" alt="" src="images/wb.png">
+		   </div>	              
+      </div>
+      <div class="fmenu">
+	     <p><a href="#">关于我们</a> | <a href="#">联系我们</a> | <a href="#">优秀讲师</a> | <a href="#">帮助中心</a> | <a href="#">意见反馈</a> | <a href="#">加入我们</a></p>
+      </div>
+      <div class="copyright">      
+        <div><a href="/">谋刻网</a>所有&nbsp;晋ICP备12006957号-9</div>
+      </div>
+    </div>
+</div>
+<!--右侧浮动-->
+<div class="rmbar">
+	<span class="barico qq" style="position:relative">
+	<div  class="showqq">
+	   <p>官方客服QQ:<br>335049335</p>
+	</div>
+	</span>
+	<span class="barico em" style="position:relative">
+	  <img src="images/num.png" width="75" class="showem">
+	</span>
+	<span class="barico wb" style="position:relative">
+	  <img src="images/wb.png" width="75" class="showwb">
+	</span>	
+	<span class="barico top" id="top">置顶</span>	
+</div>
+</body>
+
+<!-- InstanceEnd --></html>

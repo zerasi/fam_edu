@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	
+    <link rel="stylesheet" href="plugins/c/css/bootstrap.css">
+    <link rel="stylesheet" href="plugins/c/login/login.css">
+  
+    <script src="plugins/j/js/jquery.js"></script>
+    <script src="plugins/j/js/bootstrap.js"></script>
+	<script type="text/javascript" src="js/jquery.serializejson.min.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>学生登录</title>
+</head>
+<body>
+
+    <div>
+        <div class="be-content pren">
+
+            <div class="ioc_text">
+                <img src="i/login/logo.png" alt="">
+                <h4>请登录您的用户</h4>
+            </div>
+
+			<script type="text/javascript">
+							$(function(){
+								$("#tijiao").click(function(){
+										var formData=$("#loginForm").serializeJSON();
+										$.post("student/login.do",formData,function(data){
+											if(data.success==true){
+												location.href="stuindex.html";
+											}else{
+												$("#tishi").html("账号或密码不正确");
+											}
+										}) 
+								})
+							})
+						</script>
+            <div>
+                <form id="loginForm">
+                    <div class="br-content">
+
+                         <div class="input-group mb-4 bootint">
+                             <div class="input-group-prepend">
+                                 <span class="input-group-text"><i class="fa fa-user">账号</i></span>
+                             </div>
+                             <input type="text" class="form-control" placeholder="Username" name="username">
+                         </div>
+
+                         <div class="input-group mb-4 bootint">
+                             <div class="input-group-prepend">
+                                 <span class="input-group-text"><i class="fa fa-unlock-alt">密码</i></span>
+                             </div>
+                             <input type="password" class="form-control" placeholder="Your Password" name="password">
+                         </div>
+
+                        <div class="br-text">
+                            <p>
+                                <span id="tishi" style="color: red;"></span>
+                               
+                               
+                            </p>
+                        </div>
+                        <div style="padding-top: 10px">
+                            <input type="button" class="btn" value="登录" id="tijiao">
+                        </div>
+                        <div class="be-con">
+                            <span>Copyright © 2018 - 2019 <a href="">学生登录</a></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+	
+</body>
+</html>

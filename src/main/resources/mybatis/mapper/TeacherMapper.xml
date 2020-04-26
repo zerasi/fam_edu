@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zerasi.dao.TeacherMapper" >
+
+    <resultMap id="BaseResultMap" type="com.zerasi.entity.Teacher" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="username" property="username" jdbcType="VARCHAR" />
+        <result column="password" property="password" jdbcType="VARCHAR" />
+        <result column="realname" property="realname" jdbcType="VARCHAR" />
+        <result column="sex" property="sex" jdbcType="INTEGER" />
+        <result column="age" property="age" jdbcType="INTEGER" />
+        <result column="email" property="email" jdbcType="VARCHAR" />
+        <result column="school" property="school" jdbcType="VARCHAR" />
+        <result column="xueli" property="xueli" jdbcType="VARCHAR" />
+        <result column="accNbr" property="accNbr" jdbcType="VARCHAR" />
+        <result column="zhiye" property="zhiye" jdbcType="VARCHAR" />
+        <result column="zhuanye" property="zhuanye" jdbcType="VARCHAR" />
+        <result column="des" property="des" jdbcType="VARCHAR" />
+        <result column="img" property="img" jdbcType="LONGVARCHAR" />
+    </resultMap>
+
+    <sql id="Example_Where_Clause" >
+        <where >
+            <foreach collection="oredCriteria" item="criteria" separator="or" >
+                <if test="criteria.valid" >
+                    <trim prefix="(" suffix=")" prefixOverrides="and" >
+                        <foreach collection="criteria.criteria" item="criterion" >
+                            <choose >
+                                <when test="criterion.noValue" >
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue" >
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue" >
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue" >
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="Update_By_Example_Where_Clause" >
+        <where >
+            <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+                <if test="criteria.valid" >
+                    <trim prefix="(" suffix=")" prefixOverrides="and" >
+                        <foreach collection="criteria.criteria" item="criterion" >
+                            <choose >
+                                <when test="criterion.noValue" >
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue" >
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue" >
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue" >
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="Base_Column_List" >
+        id, username, password, realname, sex, age, email, school, xueli, accNbr, zhiye, 
+        zhuanye, des, img
+    </sql>
+
+    <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zerasi.entity.TeacherExample" >
+        select
+        <if test="distinct" >
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List" />
+        from teacher
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="orderByClause != null" >
+            order by ${orderByClause}
+        </if>
+    </select>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select 
+        <include refid="Base_Column_List" />
+        from teacher
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+        delete from teacher
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <delete id="deleteByExample" parameterType="com.zerasi.entity.TeacherExample" >
+        delete from teacher
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </delete>
+
+    <insert id="insert" parameterType="com.zerasi.entity.Teacher" >
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into teacher (username, password, realname, 
+            sex, age, email, 
+            school, xueli, accNbr, 
+            zhiye, zhuanye, des, 
+            img)
+        values (#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, 
+            #{sex,jdbcType=INTEGER}, #{age,jdbcType=INTEGER}, #{email,jdbcType=VARCHAR}, 
+            #{school,jdbcType=VARCHAR}, #{xueli,jdbcType=VARCHAR}, #{accNbr,jdbcType=VARCHAR}, 
+            #{zhiye,jdbcType=VARCHAR}, #{zhuanye,jdbcType=VARCHAR}, #{des,jdbcType=VARCHAR}, 
+            #{img,jdbcType=LONGVARCHAR})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.zerasi.entity.Teacher" >
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into teacher
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="username != null" >
+                username,
+            </if>
+            <if test="password != null" >
+                password,
+            </if>
+            <if test="realname != null" >
+                realname,
+            </if>
+            <if test="sex != null" >
+                sex,
+            </if>
+            <if test="age != null" >
+                age,
+            </if>
+            <if test="email != null" >
+                email,
+            </if>
+            <if test="school != null" >
+                school,
+            </if>
+            <if test="xueli != null" >
+                xueli,
+            </if>
+            <if test="accNbr != null" >
+                accNbr,
+            </if>
+            <if test="zhiye != null" >
+                zhiye,
+            </if>
+            <if test="zhuanye != null" >
+                zhuanye,
+            </if>
+            <if test="des != null" >
+                des,
+            </if>
+            <if test="img != null" >
+                img,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="username != null" >
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null" >
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="realname != null" >
+                #{realname,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null" >
+                #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="age != null" >
+                #{age,jdbcType=INTEGER},
+            </if>
+            <if test="email != null" >
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="school != null" >
+                #{school,jdbcType=VARCHAR},
+            </if>
+            <if test="xueli != null" >
+                #{xueli,jdbcType=VARCHAR},
+            </if>
+            <if test="accNbr != null" >
+                #{accNbr,jdbcType=VARCHAR},
+            </if>
+            <if test="zhiye != null" >
+                #{zhiye,jdbcType=VARCHAR},
+            </if>
+            <if test="zhuanye != null" >
+                #{zhuanye,jdbcType=VARCHAR},
+            </if>
+            <if test="des != null" >
+                #{des,jdbcType=VARCHAR},
+            </if>
+            <if test="img != null" >
+                #{img,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="countByExample" parameterType="com.zerasi.entity.TeacherExample" resultType="java.lang.Integer" >
+        select count(*) from teacher
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </select>
+
+    <update id="updateByExampleSelective" parameterType="map" >
+        update teacher
+        <set >
+            <if test="record.id != null" >
+                id = #{record.id,jdbcType=INTEGER},
+            </if>
+            <if test="record.username != null" >
+                username = #{record.username,jdbcType=VARCHAR},
+            </if>
+            <if test="record.password != null" >
+                password = #{record.password,jdbcType=VARCHAR},
+            </if>
+            <if test="record.realname != null" >
+                realname = #{record.realname,jdbcType=VARCHAR},
+            </if>
+            <if test="record.sex != null" >
+                sex = #{record.sex,jdbcType=INTEGER},
+            </if>
+            <if test="record.age != null" >
+                age = #{record.age,jdbcType=INTEGER},
+            </if>
+            <if test="record.email != null" >
+                email = #{record.email,jdbcType=VARCHAR},
+            </if>
+            <if test="record.school != null" >
+                school = #{record.school,jdbcType=VARCHAR},
+            </if>
+            <if test="record.xueli != null" >
+                xueli = #{record.xueli,jdbcType=VARCHAR},
+            </if>
+            <if test="record.accNbr != null" >
+                accNbr = #{record.accNbr,jdbcType=VARCHAR},
+            </if>
+            <if test="record.zhiye != null" >
+                zhiye = #{record.zhiye,jdbcType=VARCHAR},
+            </if>
+            <if test="record.zhuanye != null" >
+                zhuanye = #{record.zhuanye,jdbcType=VARCHAR},
+            </if>
+            <if test="record.des != null" >
+                des = #{record.des,jdbcType=VARCHAR},
+            </if>
+            <if test="record.img != null" >
+                img = #{record.img,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null" >
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+
+    <update id="updateByExample" parameterType="map" >
+        update teacher
+        set id = #{record.id,jdbcType=INTEGER},
+            username = #{record.username,jdbcType=VARCHAR},
+            password = #{record.password,jdbcType=VARCHAR},
+            realname = #{record.realname,jdbcType=VARCHAR},
+            sex = #{record.sex,jdbcType=INTEGER},
+            age = #{record.age,jdbcType=INTEGER},
+            email = #{record.email,jdbcType=VARCHAR},
+            school = #{record.school,jdbcType=VARCHAR},
+            xueli = #{record.xueli,jdbcType=VARCHAR},
+            accNbr = #{record.accNbr,jdbcType=VARCHAR},
+            zhiye = #{record.zhiye,jdbcType=VARCHAR},
+            zhuanye = #{record.zhuanye,jdbcType=VARCHAR},
+            des = #{record.des,jdbcType=VARCHAR},
+            img = #{record.img,jdbcType=LONGVARCHAR}
+        <if test="_parameter != null" >
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.zerasi.entity.Teacher" >
+        update teacher
+        <set >
+            <if test="username != null" >
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null" >
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="realname != null" >
+                realname = #{realname,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null" >
+                sex = #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="age != null" >
+                age = #{age,jdbcType=INTEGER},
+            </if>
+            <if test="email != null" >
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="school != null" >
+                school = #{school,jdbcType=VARCHAR},
+            </if>
+            <if test="xueli != null" >
+                xueli = #{xueli,jdbcType=VARCHAR},
+            </if>
+            <if test="accNbr != null" >
+                accNbr = #{accNbr,jdbcType=VARCHAR},
+            </if>
+            <if test="zhiye != null" >
+                zhiye = #{zhiye,jdbcType=VARCHAR},
+            </if>
+            <if test="zhuanye != null" >
+                zhuanye = #{zhuanye,jdbcType=VARCHAR},
+            </if>
+            <if test="des != null" >
+                des = #{des,jdbcType=VARCHAR},
+            </if>
+            <if test="img != null" >
+                img = #{img,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.zerasi.entity.Teacher" >
+        update teacher
+        set username = #{username,jdbcType=VARCHAR},
+            password = #{password,jdbcType=VARCHAR},
+            realname = #{realname,jdbcType=VARCHAR},
+            sex = #{sex,jdbcType=INTEGER},
+            age = #{age,jdbcType=INTEGER},
+            email = #{email,jdbcType=VARCHAR},
+            school = #{school,jdbcType=VARCHAR},
+            xueli = #{xueli,jdbcType=VARCHAR},
+            accNbr = #{accNbr,jdbcType=VARCHAR},
+            zhiye = #{zhiye,jdbcType=VARCHAR},
+            zhuanye = #{zhuanye,jdbcType=VARCHAR},
+            des = #{des,jdbcType=VARCHAR},
+            img = #{img,jdbcType=LONGVARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

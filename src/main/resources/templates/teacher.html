@@ -1,0 +1,225 @@
+﻿<!doctype html>
+<html><!-- InstanceBegin template="/Templates/dwt.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<meta charset="utf-8">
+<!-- InstanceBeginEditable name="doctitle" -->
+<title>家教预约</title>
+<link rel="stylesheet" href="css/bootstrap.css"/>
+<link rel="stylesheet" href="css/course.css"/>
+<script src="js/jquery-1.8.0.min.js"></script>
+<link rel="stylesheet" href="css/tab.css" media="screen">
+<script src="js/jquery.tabs.js"></script>
+<script src="js/mine.js"></script>
+<!-- InstanceEndEditable -->
+<!-- InstanceBeginEditable name="head" -->
+<!-- InstanceEndEditable -->
+
+</head>
+
+<body>
+
+<div class="head" id="fixed">
+	<div class="nav">
+    	<span class="navimg"><a href="index.html"><img border="0" src="images/logo.png"></a></span>
+        <ul class="nag">
+            <li><a href="teacherlist.html" class="link1 current">讲师</a></li>
+        	<li><a href="courselist.html" class="link1">课程</a></li>
+            <li><a href="articlelist.html" class="link1">已选课</a></li>
+            
+        </ul>
+       <span class="massage">
+        
+            <script type="text/javascript">
+            
+            	$(function(){
+            		$.post("user/zhanshi",function(data){
+            			if(data.success){
+            				var l = '<div class="logined"><a class="link2 he" onclick="logout()">退出</a><a href="#" style="width:70px" class="link2 he ico"> '+data.message+'</a> </div>'
+            				$(".massage").append(l);
+            			}else{
+            				var l = '<span class="exambtn_lore"><a class="tkbtn tklog" href="login.html">登录</a><a class="tkbtn tkreg" href="register.html">注册</a></span>'
+            				$(".massage").append(l);
+            			}
+            		})
+            	})
+            	function logout(){
+            		$.post("user/logout",function(data){
+            			if(data){
+            				location.href="jiajiao";
+            			}
+            		})
+            	}
+            </script>
+        </span>
+    </div>
+</div>
+<!-- InstanceBeginEditable name="EditRegion1" -->
+<div class="coursecont">
+<div class="coursepic tecti" style="height: 280px">
+	<div class="teaimg">
+    <img th:src="${teacher.img}" width="150"> 
+    </div>
+    <div class="teachtext">
+	<h3 th:text="${teacher.realname}"></h3><input type="hidden" th:value="${teacher.id}" id="teacherId">
+			<h4>学校专业</h4>
+			<p th:text="${teacher.school}+' | '+${teacher.zhuanye}"></p>
+			<h4>联系方式</h4>
+			<p th:text="${teacher.accNbr}+' | '+${teacher.email}"></p>
+			<h4>授课风格</h4>
+			<p th:text="${teacher.des}"></p>
+		</div>
+	<div class="clearh"></div>
+</div>
+
+
+<div class="clearh"></div>
+<div class="tcourselist2" >
+<h3 class="righttit" style="padding-left:50px;">学生评价</h3>
+		<div class="form-group" >
+			<textarea id="content" class="form-control" style="width: 1050px;margin-left: 20px;"></textarea>
+		</div>
+		<div class="form-group">
+			<input type="button" value="发表评论" class="btn btn-primary" style="margin-left: 20px" onclick="comment()"/>
+		</div>
+   		
+   		<div style="margin-top: 20px;">
+   		<ul class="list-group">
+   			<!-- <li>
+   				<span>还不错：</span>
+   				<span>还不错</span>
+   			</li> -->
+   		</ul>
+		</div>
+</div>
+   	<script type="text/javascript">
+   		$(function(){
+   			var tch_id = location.search.split("=")[1];
+   			$.post("teacher/findConmentByTeacher",{tch_id:tch_id},function(data){
+   				$(".list-group").empty();
+   				$.each(data,function(i,v){
+   					var l = '<li><span>'+v.user.username+'：</span><span>'+v.content+'</span></li>'
+   					$(".list-group").append(l);
+   				})
+   			})
+   		})
+   		function comment(){
+   			$.post("user/zhanshi",function(data){
+    			if(data.success){
+    				var tch_id = location.search.split("=")[1];
+    	   			var content = $("#content").val();
+    	   			$.post("course/commentTeacher",{tch_id:tch_id},function(data){
+    	   				if(data.success){
+    	   					if(content!=null && content!=''){
+    	   						$.post("teacher/addComment",{tch_id:tch_id,content:content},function(data){
+        	    	   				if(data.success){
+        	    	   					alert("评论成功");
+        	    	   					
+        	    	   					$.post("teacher/findConmentByTeacher",{tch_id:tch_id},function(data){
+        	    	   						$(".list-group").empty();
+        	    	   		   				$.each(data,function(i,v){
+        	    	   		   					var l = '<li><span>'+v.user.username+'：</span><span>'+v.content+'</span></li>'
+        	    	   		   					$(".list-group").append(l);
+        	    	   		   				})
+        	    	   		   			})
+        	    	   				}
+        	    	   			})
+    	   					}else{
+    	   						alert("评价内容不为空")
+    	   					}
+    	   				}else{
+    	   					alert("您没选择该老师课程，不能评价")
+    	   				}
+    	   			})
+    			}else{
+    				alert("对不起您还没登录")
+    			}
+    		})
+   			
+   		}
+   		
+   	</script>
+
+
+
+<div class="clearh"></div>
+<div class="tcourselist" style="height: 500px;">
+<h3 class="righttit" style="padding-left:50px;">在教课程</h3>
+<ul class="tcourseul">
+	<li>
+	    <span class="courseimg tcourseimg"><a href="coursecont.html" ><img width="230" src="images/box1.jpg"></a></span>
+	    <span class="tcoursetext">
+	       <h4><a href="coursecont.html" class="teatt">会计从业资格会计基础</a><a class="state">更新中</a></h4>
+	       <p class="teadec">会计从业资格会计基础会计从业资格会计基础会计础会计从业资格会计基础会计从业资格会计基础会计础会计从业资格会计基础会计从业资格会计基础会计础</p>
+	       <p class="courselabel clock">30课时 600分钟<span class="courselabel student">2555人学习</span><span class="courselabel pingjia">评价：<img width="71" height="14" src="images/evaluate.png" data-bd-imgshare-binded="1"></span></p>
+	   </span>
+	   <div style="height:0" class="clearh"></div>
+	</li>
+	
+
+</ul>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var id = $("#teacherId").val();
+		$.post("course/findAll",{tch_id:id},function(data){
+			$(".tcourseul").empty();
+			var inx = 1;
+			$.each(data,function(i,v){
+				inx = inx + 1;
+				var l1='<li><span class="courseimg tcourseimg"><a href="course?id='+v.id+'" ><img width="230" src="images/box1.jpg"></a></span><span class="tcoursetext">';
+				var l2='<h4><a href="course?id='+v.id+'" class="teatt">'+v.name+'</a><a class="state">更新中</a></h4>';
+				var l3='<p class="teadec">'+v.content+'</p><p style="color:#fa5c53;">'+v.price+'元/节</p></span><div style="height:0" class="clearh"></div></li>';
+				$(".tcourseul").append(l1+l2+l3);
+				
+			})
+			var px=136*inx+50;
+			$(".tcourselist").css("height",px+"px")
+		})
+	})
+</script>
+
+
+
+
+<div class="clearh"></div>
+</div>
+<!-- InstanceEndEditable -->
+
+
+<div class="clearh"></div>
+<div class="foot">
+<div class="fcontainer">
+      <div class="fwxwb"> 
+	       <div class="fwxwb_1">
+		       <span>关注微信</span><img width="95" alt="" src="images/num.png">
+		   </div>
+           <div>
+               <span>关注微博</span><img width="95" alt="" src="images/wb.png">
+		   </div>	              
+      </div>
+      <div class="fmenu">
+	     <p><a href="#">关于我们</a> | <a href="#">联系我们</a> | <a href="#">优秀讲师</a> | <a href="#">帮助中心</a> | <a href="#">意见反馈</a> | <a href="#">加入我们</a></p>
+      </div>
+      <div class="copyright">      
+        <div><a href="/">谋刻网</a>所有&nbsp;晋ICP备12006957号-9</div>
+      </div>
+    </div>
+</div>
+<!--右侧浮动-->
+<div class="rmbar">
+	<span class="barico qq" style="position:relative">
+	<div  class="showqq">
+	   <p>官方客服QQ:<br>335049335</p>
+	</div>
+	</span>
+	<span class="barico em" style="position:relative">
+	  <img src="images/num.png" width="75" class="showem">
+	</span>
+	<span class="barico wb" style="position:relative">
+	  <img src="images/wb.png" width="75" class="showwb">
+	</span>	
+	<span class="barico top" id="top">置顶</span>	
+</div>
+</body>
+
+<!-- InstanceEnd --></html>
