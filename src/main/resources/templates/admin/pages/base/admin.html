@@ -32,14 +32,14 @@
 					toolbar : toolbar,
 					pageList: [10,20],
 					pagination : true,
-					url : "../../admin/findPage.do",
+					url : "../../admin/findPage",
 					idField : 'id',
 					columns : columns
 				});
 				$("#save").click(function(){
 					if($("#formdata").form('validate')){
 						var dataform=$("#formdata").serializeJSON();
-						$.post("../../admin/add.do",dataform,function(data){
+						$.post("../../admin/add",dataform,function(data){
 							if(data.success){
 								$('#grid').datagrid("reload");
 								$('#standardWindow').form('clear');
@@ -96,7 +96,7 @@
 									ids.push(rowDatas[i].id);
 								}
 								ids = ids.join(",");
-								$.post("../../admin/delete.do",{"ids":ids},function(data){
+								$.post("../../admin/delete",{"ids":ids},function(data){
 									if(data.success){
 										
 										$("#grid").datagrid("reload");
@@ -132,12 +132,12 @@
 				checkbox : true
 			},{
 				field : 'username',
-				title : '标题',
+				title : '账号',
 				width : 200,
 				align : 'center'
 			} ,{
 				field : 'password',
-				title : '内容',
+				title : '密码',
 				width : 200,
 				align : 'center'
 			}] ];
@@ -184,7 +184,7 @@
 						</tr>
 						<tr>
 							
-							<td>标题</td>
+							<td>账号</td>
 							<td>
 								<input type="text" name="username" 
 									class="easyui-validatebox"  required="required"/>
@@ -192,7 +192,7 @@
 						</tr>
 						<tr>
 							
-							<td>内容</td>
+							<td>密码</td>
 							<td>
 								<input type="text" name="password" 
 									class="easyui-validatebox"  required="required"/>

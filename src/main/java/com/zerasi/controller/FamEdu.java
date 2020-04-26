@@ -10,46 +10,51 @@ import com.zerasi.entity.Teacher;
 import com.zerasi.service.TeacherService;
 
 @Controller
-public class Jiajiao {
+public class FamEdu {
 	
 	@Autowired
 	private TeacherService TeacherService;
 	@Autowired
 	private com.zerasi.service.CourseService CourseService;
-	
-	@RequestMapping("/jiajiao")
-	public String index(){
-		return "/teacherlist";
+
+	@RequestMapping("/")
+	public String indexFirst(){
+		return "teacherlist";
 	}
-	@RequestMapping("courselist")
+
+	@RequestMapping("/fam_edu")
+	public String index(){
+		return "teacherlist";
+	}
+	@RequestMapping("courselist.html")
 	public String courselist(){
 		return "courselist";
 	}
-	@RequestMapping("teacherlist")
+	@RequestMapping("teacherlist.html")
 	public String teacherlist(){
 		return "teacherlist";
 	}
-	@RequestMapping("login")
+	@RequestMapping("login.html")
 	public String login(){
 		return "login";
 	}
-	@RequestMapping("register")
+	@RequestMapping("register.html")
 	public String register(){
 		return "register";
 	}
-	@RequestMapping("articlelist")
+	@RequestMapping("articlelist.html")
 	public String articlelist(){
 		return "articlelist";
 	}
-	@RequestMapping("exam_index")
+	@RequestMapping("exam_index.html")
 	public String exam_index(){
 		return "exam_index";
 	}
-	@RequestMapping("askarea")
+	@RequestMapping("askarea.html")
 	public String askarea(){
 		return "askarea";
 	}
-	@RequestMapping("coursecont")
+	@RequestMapping("coursecont.html")
 	public String coursecont(){
 		return "coursecont";
 	}
