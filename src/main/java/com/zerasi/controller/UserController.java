@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.zerasi.utils.Md5Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,8 +17,7 @@ import com.zerasi.entity.UserExample;
 import com.zerasi.service.UserService;
 import com.zerasi.utils.PageResult;
 import com.zerasi.utils.Result;
-
-
+import sun.security.provider.MD5;
 
 
 @RestController
@@ -44,8 +44,10 @@ public class UserController {
 	public Result add(User User){
 		try {
 			if(User.getId()==null){
+				User.setPassword(Md5Utils.Encrypt(User.getPassword()));
 				this.userService.add(User);
 			}else{
+				User.setPassword(Md5Utils.Encrypt(User.getPassword()));
 				this.userService.update(User);
 			}
 			return new Result(true, "成功");
@@ -60,7 +62,7 @@ public class UserController {
 	public Result login(HttpServletRequest request ,User User){
 		try {
 			UserExample example = new UserExample();
-			example.createCriteria().andUsernameEqualTo(User.getUsername()).andPasswordEqualTo(User.getPassword());
+			example.createCriteria().andUsernameEqualTo(User.getUsername()).andPasswordEqualTo(Md5Utils.Encrypt(User.getPassword()));
 			User existUser = this.userService.login(example);
 			if(existUser!=null){
 				request.getSession().setAttribute("user", existUser);
@@ -110,6 +112,7 @@ public class UserController {
 	@RequestMapping("update")
 	public Result update( User User){
 		try {
+			User.setPassword(Md5Utils.Encrypt(User.getPassword()));
 			this.userService.update(User);
 			return new Result(true, "修改成功");
 		} catch (Exception e) {

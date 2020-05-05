@@ -2,11 +2,7 @@ package com.zerasi.service;
 
 import java.util.List;
 
-import com.zerasi.entity.Course;
-import com.zerasi.entity.CourseExample;
-import com.zerasi.entity.User;
-import com.zerasi.entity.UserCourse;
-import com.zerasi.entity.UserCourseExample;
+import com.zerasi.entity.*;
 import com.zerasi.utils.PageResult;
 
 public interface CourseService {
@@ -27,8 +23,11 @@ public interface CourseService {
 
 	List<UserCourse> findUserCourse(UserCourseExample example);
 
-	void addUserCourse(User user, Integer id);
+	void addUserCourse(UserCourse userCourse);
 
 	void deletechoose(Integer id);
 
+	PageResult teachLookChoose(Teacher teacher, Integer page, Integer rows);
+
+    void userCourseStatus(UserCourse userCourse);
 }

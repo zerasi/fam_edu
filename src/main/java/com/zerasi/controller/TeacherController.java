@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.zerasi.utils.Md5Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,6 +43,7 @@ public class TeacherController {
 	@RequestMapping("add")
 	public Result add(Teacher Teacher){
 		try {
+			Teacher.setPassword(Md5Utils.Encrypt(Teacher.getPassword()));
 			if(Teacher.getId()==null){
 				this.TeacherService.add(Teacher);
 			}else{
@@ -59,13 +61,16 @@ public class TeacherController {
 	public Result login(HttpServletRequest request ,Teacher Teacher){
 		try {
 			TeacherExample example = new TeacherExample();
-			example.createCriteria().andUsernameEqualTo(Teacher.getUsername()).andPasswordEqualTo(Teacher.getPassword());
+			example.createCriteria().andUsernameEqualTo(Teacher.getUsername()).andPasswordEqualTo(Md5Utils.Encrypt(Teacher.getPassword()));
 			Teacher existTeacher = this.TeacherService.login(example);
+			if(existTeacher==null){
+				return new Result(false, "登录失败");
+			}
 			request.getSession().setAttribute("Teacher", existTeacher);
-			return new Result(true, "添加成功");
+			return new Result(true, "登录成功");
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new Result(false, "添加失败");
+			return new Result(false, "登录失败");
 		}
 	}
 	
@@ -94,7 +99,15 @@ public class TeacherController {
 		
 		return this.TeacherService.findPage(example,page,rows);
 	}
-	
+
+	@RequestMapping("findPageMine")
+	public PageResult findPageMine(Teacher Teacher,Integer page,Integer rows,HttpServletRequest request){
+		TeacherExample example = new TeacherExample();
+		Teacher teacherExist = (Teacher) request.getSession().getAttribute("Teacher");
+		example.createCriteria().andIdEqualTo(teacherExist.getId());
+		return this.TeacherService.findPage(example,page,rows);
+	}
+
 	@RequestMapping("findOne")
 	public Teacher findOne(Integer id){
 		Teacher Teacher = this.TeacherService.findOne(id);
@@ -104,6 +117,7 @@ public class TeacherController {
 	@RequestMapping("update")
 	public Result update( Teacher Teacher){
 		try {
+			Teacher.setPassword(Md5Utils.Encrypt(Teacher.getPassword()));
 			this.TeacherService.update(Teacher);
 			return new Result(true, "修改成功");
 		} catch (Exception e) {

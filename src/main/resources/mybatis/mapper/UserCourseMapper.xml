@@ -6,6 +6,14 @@
         <id column="id" property="id" jdbcType="INTEGER" />
         <result column="uid" property="uid" jdbcType="INTEGER" />
         <result column="cour_id" property="cour_id" jdbcType="INTEGER" />
+        <result column="start_date" property="start_date" jdbcType="VARCHAR" />
+        <result column="end_date" property="end_date" jdbcType="VARCHAR" />
+        <result column="adrss" property="adrss" jdbcType="VARCHAR" />
+        <result column="acc_nbr" property="acc_nbr" jdbcType="VARCHAR" />
+        <result column="status_cd" property="status_cd" jdbcType="VARCHAR" />
+        <result column="bak1" property="bak1" jdbcType="VARCHAR" />
+        <result column="bak2" property="bak2" jdbcType="VARCHAR" />
+        <result column="bak3" property="bak3" jdbcType="VARCHAR" />
     </resultMap>
 
     <sql id="Example_Where_Clause" >
@@ -69,7 +77,7 @@
     </sql>
 
     <sql id="Base_Column_List" >
-        id, uid, cour_id
+        id, uid, cour_id, start_date, end_date, adrss, acc_nbr, status_cd, bak1, bak2, bak3
     </sql>
 
     <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zerasi.entity.UserCourseExample" >
@@ -111,8 +119,14 @@
         <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
             SELECT LAST_INSERT_ID()
         </selectKey>
-        insert into user_course (uid, cour_id)
-        values (#{uid,jdbcType=INTEGER}, #{cour_id,jdbcType=INTEGER})
+        insert into user_course (uid, cour_id, start_date, 
+            end_date, adrss, acc_nbr, 
+            status_cd, bak1, bak2, 
+            bak3)
+        values (#{uid,jdbcType=INTEGER}, #{cour_id,jdbcType=INTEGER}, #{start_date,jdbcType=VARCHAR}, 
+            #{end_date,jdbcType=VARCHAR}, #{adrss,jdbcType=VARCHAR}, #{acc_nbr,jdbcType=VARCHAR}, 
+            #{status_cd,jdbcType=VARCHAR}, #{bak1,jdbcType=VARCHAR}, #{bak2,jdbcType=VARCHAR}, 
+            #{bak3,jdbcType=VARCHAR})
     </insert>
 
     <insert id="insertSelective" parameterType="com.zerasi.entity.UserCourse" >
@@ -127,6 +141,30 @@
             <if test="cour_id != null" >
                 cour_id,
             </if>
+            <if test="start_date != null" >
+                start_date,
+            </if>
+            <if test="end_date != null" >
+                end_date,
+            </if>
+            <if test="adrss != null" >
+                adrss,
+            </if>
+            <if test="acc_nbr != null" >
+                acc_nbr,
+            </if>
+            <if test="status_cd != null" >
+                status_cd,
+            </if>
+            <if test="bak1 != null" >
+                bak1,
+            </if>
+            <if test="bak2 != null" >
+                bak2,
+            </if>
+            <if test="bak3 != null" >
+                bak3,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides="," >
             <if test="uid != null" >
@@ -134,6 +172,30 @@
             </if>
             <if test="cour_id != null" >
                 #{cour_id,jdbcType=INTEGER},
+            </if>
+            <if test="start_date != null" >
+                #{start_date,jdbcType=VARCHAR},
+            </if>
+            <if test="end_date != null" >
+                #{end_date,jdbcType=VARCHAR},
+            </if>
+            <if test="adrss != null" >
+                #{adrss,jdbcType=VARCHAR},
+            </if>
+            <if test="acc_nbr != null" >
+                #{acc_nbr,jdbcType=VARCHAR},
+            </if>
+            <if test="status_cd != null" >
+                #{status_cd,jdbcType=VARCHAR},
+            </if>
+            <if test="bak1 != null" >
+                #{bak1,jdbcType=VARCHAR},
+            </if>
+            <if test="bak2 != null" >
+                #{bak2,jdbcType=VARCHAR},
+            </if>
+            <if test="bak3 != null" >
+                #{bak3,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -157,6 +219,30 @@
             <if test="record.cour_id != null" >
                 cour_id = #{record.cour_id,jdbcType=INTEGER},
             </if>
+            <if test="record.start_date != null" >
+                start_date = #{record.start_date,jdbcType=VARCHAR},
+            </if>
+            <if test="record.end_date != null" >
+                end_date = #{record.end_date,jdbcType=VARCHAR},
+            </if>
+            <if test="record.adrss != null" >
+                adrss = #{record.adrss,jdbcType=VARCHAR},
+            </if>
+            <if test="record.acc_nbr != null" >
+                acc_nbr = #{record.acc_nbr,jdbcType=VARCHAR},
+            </if>
+            <if test="record.status_cd != null" >
+                status_cd = #{record.status_cd,jdbcType=VARCHAR},
+            </if>
+            <if test="record.bak1 != null" >
+                bak1 = #{record.bak1,jdbcType=VARCHAR},
+            </if>
+            <if test="record.bak2 != null" >
+                bak2 = #{record.bak2,jdbcType=VARCHAR},
+            </if>
+            <if test="record.bak3 != null" >
+                bak3 = #{record.bak3,jdbcType=VARCHAR},
+            </if>
         </set>
         <if test="_parameter != null" >
             <include refid="Update_By_Example_Where_Clause" />
@@ -167,7 +253,15 @@
         update user_course
         set id = #{record.id,jdbcType=INTEGER},
             uid = #{record.uid,jdbcType=INTEGER},
-            cour_id = #{record.cour_id,jdbcType=INTEGER}
+            cour_id = #{record.cour_id,jdbcType=INTEGER},
+            start_date = #{record.start_date,jdbcType=VARCHAR},
+            end_date = #{record.end_date,jdbcType=VARCHAR},
+            adrss = #{record.adrss,jdbcType=VARCHAR},
+            acc_nbr = #{record.acc_nbr,jdbcType=VARCHAR},
+            status_cd = #{record.status_cd,jdbcType=VARCHAR},
+            bak1 = #{record.bak1,jdbcType=VARCHAR},
+            bak2 = #{record.bak2,jdbcType=VARCHAR},
+            bak3 = #{record.bak3,jdbcType=VARCHAR}
         <if test="_parameter != null" >
             <include refid="Update_By_Example_Where_Clause" />
         </if>
@@ -182,6 +276,30 @@
             <if test="cour_id != null" >
                 cour_id = #{cour_id,jdbcType=INTEGER},
             </if>
+            <if test="start_date != null" >
+                start_date = #{start_date,jdbcType=VARCHAR},
+            </if>
+            <if test="end_date != null" >
+                end_date = #{end_date,jdbcType=VARCHAR},
+            </if>
+            <if test="adrss != null" >
+                adrss = #{adrss,jdbcType=VARCHAR},
+            </if>
+            <if test="acc_nbr != null" >
+                acc_nbr = #{acc_nbr,jdbcType=VARCHAR},
+            </if>
+            <if test="status_cd != null" >
+                status_cd = #{status_cd,jdbcType=VARCHAR},
+            </if>
+            <if test="bak1 != null" >
+                bak1 = #{bak1,jdbcType=VARCHAR},
+            </if>
+            <if test="bak2 != null" >
+                bak2 = #{bak2,jdbcType=VARCHAR},
+            </if>
+            <if test="bak3 != null" >
+                bak3 = #{bak3,jdbcType=VARCHAR},
+            </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
@@ -189,7 +307,15 @@
     <update id="updateByPrimaryKey" parameterType="com.zerasi.entity.UserCourse" >
         update user_course
         set uid = #{uid,jdbcType=INTEGER},
-            cour_id = #{cour_id,jdbcType=INTEGER}
+            cour_id = #{cour_id,jdbcType=INTEGER},
+            start_date = #{start_date,jdbcType=VARCHAR},
+            end_date = #{end_date,jdbcType=VARCHAR},
+            adrss = #{adrss,jdbcType=VARCHAR},
+            acc_nbr = #{acc_nbr,jdbcType=VARCHAR},
+            status_cd = #{status_cd,jdbcType=VARCHAR},
+            bak1 = #{bak1,jdbcType=VARCHAR},
+            bak2 = #{bak2,jdbcType=VARCHAR},
+            bak3 = #{bak3,jdbcType=VARCHAR}
         where id = #{id,jdbcType=INTEGER}
     </update>
 </mapper>

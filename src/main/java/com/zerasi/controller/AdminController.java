@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.zerasi.utils.Md5Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +18,7 @@ import com.zerasi.service.AdminService;
 import com.zerasi.utils.PageResult;
 import com.zerasi.utils.Result;
 import com.zerasi.utils.Ztree;
-
+import sun.security.provider.MD5;
 
 
 @RestController
@@ -49,6 +50,7 @@ public class AdminController {
 	@RequestMapping("add")
 	public Result add(Admin Admin){
 		try {
+			Admin.setPassword(Md5Utils.Encrypt(Admin.getPassword()));
 			if(Admin.getId()==null){
 				this.AdminService.add(Admin);
 			}else{
@@ -66,7 +68,7 @@ public class AdminController {
 	public Result login(HttpServletRequest request ,Admin Admin){
 		try {
 			AdminExample example = new AdminExample();
-			example.createCriteria().andUsernameEqualTo(Admin.getUsername()).andPasswordEqualTo(Admin.getPassword());
+			example.createCriteria().andUsernameEqualTo(Admin.getUsername()).andPasswordEqualTo(Md5Utils.Encrypt(Admin.getPassword()));
 			Admin existAdmin = this.AdminService.login(example);
 			request.getSession().setAttribute("Admin", existAdmin);
 			if(existAdmin==null){
@@ -114,6 +116,7 @@ public class AdminController {
 	@RequestMapping("update")
 	public Result update( Admin Admin){
 		try {
+			Admin.setPassword(Md5Utils.Encrypt(Admin.getPassword()));
 			this.AdminService.update(Admin);
 			return new Result(true, "修改成功");
 		} catch (Exception e) {

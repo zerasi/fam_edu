@@ -32,19 +32,19 @@
 					toolbar : toolbar,
 					pageList: [10,20],
 					pagination : true,
-					url : "../../user/findPage",
+					url : "../../teacher/findPageMine",
 					idField : 'id',
 					columns : columns
 				});
 				$("#save").click(function(){
 					if($("#formdata").form('validate')){
 						var dataform=$("#formdata").serializeJSON();
-						/* var img = $("#huixian").attr("src");
-						dataform.img=img; */
-						$.post("../../user/add",dataform,function(data){
+						var img = $("#huixian").attr("src");
+						dataform.img=img;
+						$.post("../../teacher/add",dataform,function(data){
 							if(data.success){
 								$('#grid').datagrid("reload");
-								$('#standardWindow').form('clear');
+								
 							}
 							$("#standardWindow").window("close");
 							$.messager.alert("提示",data.message);
@@ -61,7 +61,8 @@
 			                	var img = e.target.result;
 			                	$("#huixian").attr("src",img);
 			                
-			                };    
+			                }; 
+			                $(this).val('');
 			        });
 			});
 			
@@ -101,7 +102,7 @@
 									ids.push(rowDatas[i].id);
 								}
 								ids = ids.join(",");
-								$.post("../../user/delete",{"ids":ids},function(data){
+								$.post("../../teacher/delete",{"ids":ids},function(data){
 									if(data.success){
 										
 										$("#grid").datagrid("reload");
@@ -115,21 +116,11 @@
 		  	}	
 			
 			//工具栏
-			var toolbar = [ {
-				id : 'button-add',
-				text : '增加',
-				iconCls : 'icon-add',
-				handler :doAdd
-			}, {
+			var toolbar = [  {
 				id : 'button-edit',
 				text : '修改',
 				iconCls : 'icon-edit',
 				handler :doedit
-			},{
-				id : 'button-delete',
-				text : '删除',
-				iconCls : 'icon-cancel',
-				handler :dodelete
 			}];
 			// 定义列
 			var columns = [ [ {
@@ -146,7 +137,7 @@
 				width : 120,
 				align : 'center'
 			} ,{
-				field : 'realName',
+				field : 'realname',
 				title : '姓名',
 				width : 120,
 				align : 'center'
@@ -154,8 +145,41 @@
 				field : 'sex',
 				title : '性别',
 				width : 50,
-				align : 'center'
+				align : 'center',formatter:function(data,row, index){
+					if(data==0){
+						return '男';
+					}else if(data==1){
+						return '女';
+						
+					}
+					return "";
+				}
 			} ,{
+				field : 'age',
+				title : '年龄',
+				width : 50,
+				align : 'center'
+			},{
+				field : 'school',
+				title : '毕业院校',
+				width : 120,
+				align : 'center'
+			},{
+				field : 'zhuanye',
+				title : '专业',
+				width : 120,
+				align : 'center'
+			},{
+				field : 'xueli',
+				title : '学历',
+				width : 100,
+				align : 'center'
+			},{
+				field : 'zhiye',
+				title : '职业',
+				width : 120,
+				align : 'center'
+			},{
 				field : 'accNbr',
 				title : '手机号',
 				width : 120,
@@ -165,6 +189,21 @@
 				title : '邮箱',
 				width : 120,
 				align : 'center'
+			},{
+				field : 'des',
+				title : '详细',
+				width : 200,
+				align : 'center'
+			},{
+				field : 'img',
+				title : '图片',
+				width : 120,
+				align : 'center',formatter:function(data,row, index){
+					if(data!=null){
+						return '<img src="'+data+'" style="width: 60px;height: 60px;">';
+					}
+					return "";
+				}
 			}] ];
 			/*  ,
 				{
@@ -191,7 +230,7 @@
 			<table id="grid"></table>
 		</div>
 		
-		<div class="easyui-window" title="用户添加或者修改" id="standardWindow" collapsible="false" minimizable="false" maximizable="false" modal="true" closed="true" style="width:700px;top:10px;left:200px">
+		<div class="easyui-window" title="教师添加或者修改" id="standardWindow" collapsible="false" minimizable="false" maximizable="false" modal="true" closed="true" style="width:700px;top:10px;left:200px">
 			<div region="north" style="height:31px;overflow:hidden;" split="false" border="false">
 				<div class="datagrid-toolbar">
 					<a id="save" icon="icon-save" href="#" class="easyui-linkbutton" plain="true">保存</a>
@@ -222,7 +261,7 @@
 						<tr>
 							<td>姓名</td>
 							<td>
-								<input type="text" name="realName" 
+								<input type="text" name="realname" 
 									class="easyui-validatebox"  />
 							</td>
 							<td>性别</td>
@@ -233,7 +272,38 @@
 									</select>  
 							</td>
 						</tr>
-						
+						<tr>
+							<td>年龄</td>
+							<td>
+								<input type="text" name="age" 
+									class="easyui-validatebox"  oninput="value=value.replace(/[^\d]/g,'')"/>
+							</td>
+							
+						</tr>
+						<tr>
+							<td>毕业学校</td>
+							<td>
+								<input type="text" name="school" 
+									class="easyui-validatebox"  />
+							</td>
+							<td>专业</td>
+							<td>
+								<input type="text" name="zhuanye" 
+									class="easyui-validatebox"  />
+							</td>
+						</tr>
+						<tr>
+							<td>学历</td>
+							<td>
+								<input type="text" name="xueli" 
+									class="easyui-validatebox"  />
+							</td>
+							<td>职业</td>
+							<td>
+								<input type="text" name="zhiye" 
+									class="easyui-validatebox"  />
+							</td>
+						</tr>
 						<tr>
 							<td>电话</td>
 							<td>
@@ -246,8 +316,15 @@
 									class="easyui-validatebox"  />
 							</td>
 						</tr>
-				
-						<!-- 
+						<tr>
+							<td>详细</td>
+							<td>
+								<input type="text" name="des" 
+									class="easyui-validatebox"  />
+							</td>
+							
+						</tr>
+						
 						<tr>
 							<td>图片</td>
 							<td colspan="3">
@@ -255,7 +332,7 @@
 								<input type="file" id="img" multiple="multiple" />
 							</td>
 							
-						</tr> -->
+						</tr>
 					</table>
 				</form>
 			</div>

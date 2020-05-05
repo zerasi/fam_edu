@@ -22,7 +22,7 @@
 			$(function(){
 				// 先将body隐藏，再显示，不会出现页面刷新效果
 				$("body").css({visibility:"visible"});
-				var img = null;
+				
 				$('#grid').datagrid( {
 					iconCls : 'icon-forward',
 					fit : true,
@@ -32,16 +32,14 @@
 					toolbar : toolbar,
 					pageList: [10,20],
 					pagination : true,
-					url : "../../user/findPage",
+					url : "../../course/teachLookChoose",
 					idField : 'id',
 					columns : columns
 				});
 				$("#save").click(function(){
 					if($("#formdata").form('validate')){
 						var dataform=$("#formdata").serializeJSON();
-						/* var img = $("#huixian").attr("src");
-						dataform.img=img; */
-						$.post("../../user/add",dataform,function(data){
+						$.post("../../course/userCourseStatus",dataform,function(data){
 							if(data.success){
 								$('#grid').datagrid("reload");
 								$('#standardWindow').form('clear');
@@ -58,9 +56,7 @@
 			                var reader = new FileReader();  
 			                reader.readAsDataURL(file);//调用自带方法进行转换  
 			                reader.onload = function(e) {  
-			                	var img = e.target.result;
-			                	$("#huixian").attr("src",img);
-			                
+			                	img = e.target.result;
 			                };    
 			        });
 			});
@@ -80,8 +76,7 @@
 					  $("#standardWindow").window("open");
 					  	var row=rowDatas[0];
 						$("#formdata").form("load",row);
-						$("#huixian").attr("src",row.img)
-						//$("#categoryId").combobox('setValue',row.category.id);
+						$("#categoryId").combobox('setValue',row.category.id);
 						$("#standardWindow").window("open");
 				  }else{
 					  $.messager.alert("提示","请选择一条数据");
@@ -101,7 +96,7 @@
 									ids.push(rowDatas[i].id);
 								}
 								ids = ids.join(",");
-								$.post("../../user/delete",{"ids":ids},function(data){
+								$.post("../../admin/delete",{"ids":ids},function(data){
 									if(data.success){
 										
 										$("#grid").datagrid("reload");
@@ -116,68 +111,82 @@
 			
 			//工具栏
 			var toolbar = [ {
-				id : 'button-add',
-				text : '增加',
-				iconCls : 'icon-add',
-				handler :doAdd
-			}, {
 				id : 'button-edit',
-				text : '修改',
+				text : '操作',
 				iconCls : 'icon-edit',
 				handler :doedit
-			},{
-				id : 'button-delete',
-				text : '删除',
-				iconCls : 'icon-cancel',
-				handler :dodelete
 			}];
 			// 定义列
 			var columns = [ [ {
 				field : 'id',
 				checkbox : true
 			},{
-				field : 'username',
-				title : '账号',
-				width : 120,
-				align : 'center'
+				field : 'a',
+				title : '课程',
+				width : 200,
+				align : 'center',formatter:function(data,row, index){
+					if(row.course!=null){
+						return row.course.name;
+					}
+					return "";
+				}
 			} ,{
-				field : 'password',
-				title : '密码',
-				width : 120,
-				align : 'center'
+				field : 'b',
+				title : '学生用户',
+				width : 150,
+				align : 'center',formatter:function(data,row, index){
+					if(row.user!=null){
+						return row.user.realName;
+					}
+					return "";
+				}
 			} ,{
-				field : 'realName',
-				title : '姓名',
-				width : 120,
-				align : 'center'
-			} ,{
-				field : 'sex',
-				title : '性别',
-				width : 50,
-				align : 'center'
-			} ,{
-				field : 'accNbr',
-				title : '手机号',
-				width : 120,
+				field : 'start_date',
+				title : '开始时间',
+				width : 150,
 				align : 'center'
 			},{
-				field : 'email',
-				title : '邮箱',
-				width : 120,
+				field : 'end_date',
+				title : '结束时间',
+				width : 150,
 				align : 'center'
-			}] ];
-			/*  ,
-				{
-					field : 'c.id',
-					title : '所属分类',
-					width : 120,
-					align : 'center',formatter:function(data,row, index){
-						if(row.category!=null){
-							return row.category.name;
-						}
-						return "";
+			},{
+				field : 'adrss',
+				title : '上课地址',
+				width : 150,
+				align : 'center'
+			},{
+				field : 'acc_nbr',
+				title : '联系方式',
+				width : 150,
+				align : 'center'
+			},{
+				field : 'bak2',
+				title : '应付价格',
+				width : 150,
+				align : 'center'
+			},{
+				field : 'bak1',
+				title : '备注',
+				width : 200,
+				align : 'center'
+			},{
+				field : 'status_cd',
+				title : '状态',
+				width : 150,
+				align : 'center',formatter:function(data,row, index){
+					if(data == 0){
+						return '预约中'
+					}else if(data == 1){
+						return '预约成功'
+					}else if(data == 3){
+						return '上课完成'
+					}else if(data == 4){
+						return '预约失败'
 					}
-				} */
+					return ''
+				}
+			}] ];
 				function image2Base64(img) {
 					var reader = new FileReader();
 					reader.readAsDataURL(img);
@@ -191,7 +200,7 @@
 			<table id="grid"></table>
 		</div>
 		
-		<div class="easyui-window" title="用户添加或者修改" id="standardWindow" collapsible="false" minimizable="false" maximizable="false" modal="true" closed="true" style="width:700px;top:10px;left:200px">
+		<div class="easyui-window" title="操作" id="standardWindow" collapsible="false" minimizable="false" maximizable="false" modal="true" closed="true" style="width:700px;top:10px;left:200px">
 			<div region="north" style="height:31px;overflow:hidden;" split="false" border="false">
 				<div class="datagrid-toolbar">
 					<a id="save" icon="icon-save" href="#" class="easyui-linkbutton" plain="true">保存</a>
@@ -208,54 +217,18 @@
 							</td>
 						</tr>
 						<tr>
-							<td>账号</td>
+							<td>状态</td>
 							<td>
-								<input type="text" name="username" 
-									class="easyui-validatebox" required="required" />
-							</td>
-							<td>密码</td>
-							<td>
-								<input type="text" name="password" 
-									class="easyui-validatebox"  required="required"/>
-							</td>
-						</tr>
-						<tr>
-							<td>姓名</td>
-							<td>
-								<input type="text" name="realName" 
-									class="easyui-validatebox"  />
-							</td>
-							<td>性别</td>
-							<td>
-									<select id="cc" class="easyui-combobox" name="sex" style="width: 100px;">   
-									    <option value="0">男</option>   
-									    <option value="1">女</option>   
-									</select>  
+								<select id="cc" class="easyui-combobox" name="status_cd" style="width: 100px;">
+									<option value="0">预约中</option>
+									<option value="1">预约成功</option>
+									<option value="3">上课完成</option>
+									<option value="4">预约失败</option>
+								</select>
 							</td>
 						</tr>
 						
-						<tr>
-							<td>电话</td>
-							<td>
-								<input type="text" name="accNbr" 
-									class="easyui-validatebox" oninput="value=value.replace(/[^\d]/g,'')" />
-							</td>
-							<td>邮箱</td>
-							<td>
-								<input type="text" name="email" 
-									class="easyui-validatebox"  />
-							</td>
-						</tr>
-				
-						<!-- 
-						<tr>
-							<td>图片</td>
-							<td colspan="3">
-								<img id="huixian" style="width: 60px;height: 60px;">
-								<input type="file" id="img" multiple="multiple" />
-							</td>
-							
-						</tr> -->
+						
 					</table>
 				</form>
 			</div>

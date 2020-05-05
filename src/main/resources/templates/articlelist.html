@@ -2,15 +2,11 @@
 <html><!-- InstanceBegin template="/Templates/dwt.dwt" codeOutsideHTMLIsLocked="false" -->
 <head>
 <meta charset="utf-8">
-<!-- InstanceBeginEditable name="doctitle" -->
 <title>家教预约</title>
 <link rel="stylesheet" href="css/article.css">
 <link rel="stylesheet" href="css/course.css"/>
 <script src="js/jquery-1.8.0.min.js"></script>
 <script src="js/mine.js"></script>
-<!-- InstanceEndEditable -->
-<!-- InstanceBeginEditable name="head" -->
-<!-- InstanceEndEditable -->
 <script src="js/jquery-1.8.0.min.js"></script>
 </head>
 
@@ -40,9 +36,24 @@
             					var inx = 1;
             					$.each(res,function(i,v){
             						inx = inx+1;
-            						var l = '<div class="articlelist"><h3><a class="artlink" >'+v.course.name+'</a></h3>';
-            						var l1 = '<p>'+v.course.content+'</p><p class="artilabel"><span class="ask_label" onclick="deletechoose('+v.id+')">删除</span><b class="labtime">'+v.course.teacher.realname+'</b></p><div class="clearh"></div></div>';
-            						$(".coursetext").append(l+l1);
+            						var l = '<div class="articlelist"><h3><a class="artlink" >课程名称：'+v.course.name+'&nbsp; &nbsp;教师：'+v.course.teacher.realname+'</a></h3>';
+            						l = l + '<p>课程简介：'+v.course.content+'</p>';
+									l = l + '<p>'+ '<span>开始时间：'+v.start_date+'</span>' +'<span>&nbsp; &nbsp;结束时间：'+v.end_date+'</span></p>'
+									l = l + '<p>'+ '<span>上课地址：'+v.adrss+'</span>' +'<span>&nbsp; &nbsp;联系方式：'+v.acc_nbr+'</span></p>'
+									l = l + '<p>'+ '<span>应付价格：'+v.bak2+'</span>' +'<span>&nbsp; &nbsp;备注：'+v.bak1+'</span></p>';
+									//0 预约中 1预约成功 3上课完成 4预约失败
+									if(v.status_cd == 0){
+										l = l + '<p>'+ '<span>状态：预约中</span></p>';
+									}else if(v.status_cd == 1){
+										l = l + '<p>'+ '<span>状态：预约成功</span></p>';
+									}else if(v.status_cd == 3){
+										l = l + '<p>'+ '<span>状态：上课完成 </span></p>';
+									}else if(v.status_cd == 4){
+										l = l + '<p>'+ '<span>状态：预约失败</span></p>';
+									}
+
+									l = l + ''+'<p class="artilabel"><span class="ask_label" onclick="deletechoose('+v.id+')">删除</span></p><div class="clearh"></div></div>';
+            						$(".coursetext").append(l);
             					})
             					var px=151*inx+50;
 								$(".coursetext").css("height",px+"px")
@@ -63,18 +74,7 @@
             	}
             	function deletechoose(id){
             		$.post('course/deletechoose',{id:id},function(data){
-            			$.post("course/usercourse",function(res){
-        					$(".coursetext").empty();
-        					var inx = 1;
-        					$.each(res,function(i,v){
-        						inx = inx+1;
-        						var l = '<div class="articlelist"><h3><a class="artlink" >'+v.course.name+'</a></h3>';
-        						var l1 = '<p>'+v.course.content+'</p><p class="artilabel"><span class="ask_label" onclick="deletechoose('+v.id+')">删除</span><b class="labtime">'+v.teacher.realname+'</b></p><div class="clearh"></div></div>';
-        						$(".coursetext").append(l+l1);
-        					})
-        					var px=151*inx+50;
-							$(".coursetext").css("height",px+"px")
-        				})
+            			location.reload();
             		})
             	}
             </script>

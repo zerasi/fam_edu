@@ -6,10 +6,6 @@
 */
 $(function() {
 
-    /*题库导航*/
-	$(".hovver").mouseover(function() {
-		$(".hidebox").slideDown();
-	});
 	$(".hidebox").mouseover(function() {
 		$(".hidebox").show();
 	});

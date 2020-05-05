@@ -8,14 +8,78 @@
 <script src="js/jquery-1.8.0.min.js"></script>
 <link rel="stylesheet" href="css/tab.css" media="screen">
 <script src="js/jquery.tabs.js"></script>
-<script src="js/mine.js"></script>
-<!-- InstanceEndEditable -->
-<!-- InstanceBeginEditable name="head" -->
-<!-- InstanceEndEditable -->
+<script type="text/javascript" src="js/jquery.serializejson.min.js"></script>
+<!--<script src="js/mine.js"></script>-->
+	<style>
+		*{ margin:0; padding:0;}
+		button, input{ outline:none;}
+		button, .login{ width:120px; height:42px; background:#f40; color:#fff; border:none; border-radius:6px; display: block; margin:20px auto; cursor: pointer;}
+		.popOutBg{ width:100%; height:100%; position: fixed; left:0; top:0; background:rgba(0,0,0,.6); display: none;}
+		.popOut{ position:fixed; width:600px; height:500px; top:40%; left:50%; margin-top:-150px; margin-left:-300px; background:#fff; border-radius:8px; overflow: hidden;display: none; }
+		.popOut > span{ position: absolute; right:10px; top:0; height:42px; line-height:42px; color:#000; font-size:30px; cursor: pointer;}
+		.popOut table{ display: block; margin:42px auto 0; width:520px;}
+		.popOut caption{ width:520px; text-align: center; color:#f40; font-size:18px; line-height:42px;}
+		.popOut table tr td{ color:#666; padding:6px; font-size:14px;}
+		.popOut table tr td:first-child{ text-align: right;}
+		.inp{ width:280px; height:30px; line-height:30px; border:1px solid #999; padding:5px 10px; color:#000; font-size:14px; border-radius:6px;}
+		.inp:focus{ border-color:#f40;}
+		@keyframes ani{
+			from{
+				transform:translateX(-100%) rotate(-60deg) scale(.5);
+			}
+			50%{
+				transform:translateX(0) rotate(0) scale(1);
+			}
+			90%{
+				transform:translateX(20px) rotate(0) scale(.8);
+			}
+			to{
+				transform:translateX(0) rotate(0) scale(1);
+			}
+		}
+		.ani{ animation:ani .5s ease-in-out;}
+	</style>
 
 </head>
 
 <body>
+<div class="popOutBg" style="z-index: 99"></div>
+<div class="popOut" style="z-index: 100">
+	<span title="关闭" onclick="displayX()"> x </span>
+	<form id="formId">
+		<input name="cour_id" type="hidden" class="inp" th:value="${course.id}"/>
+		<table>
+			<caption>课程预约</caption>
+			<tr>
+				<td width="120">预约课程：</td>
+				<td><input name="" type="text" readonly="readonly" class="inp" th:value="${course.name}"/></td>
+			</tr>
+			<tr>
+				<td width="120">开始时间：</td>
+				<td><input name="start_date" type="datetime-local" class="inp" placeholder="请输入开始时间" /></td>
+			</tr>
+			<tr>
+				<td width="120">结束时间：</td>
+				<td><input name="end_date" type="datetime-local" class="inp" placeholder="请输入结束时间" /></td>
+			</tr>
+			<tr>
+				<td width="120">上课地点：</td>
+				<td><input name="adrss" type="text" class="inp" placeholder="请输入上课地点" /></td>
+			</tr>
+			<tr>
+				<td width="120">联系电话：</td>
+				<td><input name="acc_nbr" type="text" class="inp" placeholder="请输入联系电话" /></td>
+			</tr>
+			<tr>
+				<td width="120">备注：</td>
+				<td><input name="bak1" type="text" class="inp" placeholder="请输入备注" /></td>
+			</tr>
+			<tr>
+				<td colspan="2"><input type="button" class="login" value="预约" onclick="yuYueCource()"/></td>
+			</tr>
+		</table>
+	</form>
+</div>
 
 <div class="head" id="fixed">
 	<div class="nav">
@@ -40,6 +104,35 @@
             			}
             		})
             	})
+
+				function yuYueCource(){
+					$.post("user/zhanshi",function(data){
+						if(data.success){
+							var dataform=$("#formId").serializeJSON();
+							$.ajax({
+								url:"course/xuanke",
+								type:"POST",
+								contentType: "application/json; charset=utf-8",
+								data:JSON.stringify(dataform),
+								dataType:'json',
+								success:function(data){
+									$(".popOut").fadeOut();
+									$(".popOutBg").fadeOut();
+									if(data.success){
+										$("#tip").html('预约成功')
+										$("#tip").css("color","green")
+									}else{
+										$("#tip").html('预约失败')
+										$("#tip").css("color","red")
+									}
+									$("#tip").fadeIn();
+								}
+							});
+						}else{
+							alert("您还没有登录！")
+						}
+					})
+				}
             	function logout(){
             		$.post("user/logout",function(data){
             			if(data){
@@ -47,17 +140,14 @@
             			}
             		})
             	}
+
+            	function displayX(){
+					$(".popOut").fadeOut();
+					$(".popOutBg").fadeOut();
+				}
             	function xuanke(){
-            		$.post("user/zhanshi",function(data){
-            			if(data.success){
-            				var id = location.search.split("=")[1];
-            				$.post("course/xuanke",{id:id},function(data){
-            					alert(data.message);
-            				})
-            			}else{
-            				alert("您还没有登录！")
-            			}
-            		})
+					$(".popOut").fadeIn();
+					$(".popOutBg").fadeIn();
             	}
             </script>
         </span>
@@ -72,9 +162,7 @@
     	<h2 class="courseh2" th:text="${course.name}">会计基础</h2>    
 		<p class="courstime" th:text="'讲师：'+${course.teacher.realname}"></p>
         <p class="courstime" th:text="'课程价格：'+${course.price}"></p>
-		<p class="courstime">课程评价：<img width="71" height="14" src="images/evaluate5.png">&nbsp;&nbsp;<span class="hidden-sm hidden-xs">5.0分（10人评价）</span></p>
-        <!--<p><a class="state end">完结</a></p>-->      
-        <span class="coursebtn"><a class="btnlink" href="javascript:void(0)" onclick="xuanke()" id="xuanke">加入学习</a></span> 
+        <span class="coursebtn"><a class="btnlink" href="javascript:void(0)" onclick="xuanke()" id="xuanke">加入学习</a></span>&nbsp; &nbsp;<span id="tip" style="display: none;"></span>
 		<div style="clear:both;"></div>
 		<div id="bds">
             <div class="bdsharebuttonbox">
@@ -96,22 +184,9 @@
 	<h3 class="leftit">课程简介</h3>
     <p class="coutex" th:text="${course.content}"></p>
 	<div class="clearh"></div>
-	<!-- <h3 class="leftit">课程目录</h3>
-    <dl class="mulu">
-    	<dt><a href="#" class="graylink">第二章&nbsp;&nbsp;会计要素与会计等式</a></dt>
-        <dd>内容包括会计基础、财经法规和职业道德、电算化三科视频课程全系列。内容包括会计基础、财经法规和职业道德、电算化三科视频课程全系列</dd>
-    </dl> -->
 </div>
-
-
-
-
-
 <div class="clearh"></div>
 </div>
-<!-- InstanceEndEditable -->
-
-
 <div class="clearh"></div>
 <div class="foot">
 <div class="fcontainer">

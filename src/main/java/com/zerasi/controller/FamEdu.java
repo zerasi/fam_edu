@@ -62,6 +62,10 @@ public class FamEdu {
 	public String admin(){
 		return "admin/index";
 	}
+	@RequestMapping("teachIndex")
+	public String teachIndex(){
+		return "admin/teachindex";
+	}
 	@RequestMapping("adminLogin")
 	public String adminLogin(){
 		return "admin/login";
@@ -86,9 +90,17 @@ public class FamEdu {
 	public String course(){
 		return "admin/pages/base/course";
 	}
+	@RequestMapping("pages/base/courseMine")
+	public String courseMine(){
+		return "admin/pages/base/courseMine";
+	}
 	@RequestMapping("pages/base/teacher")
 	public String teacher(){
 		return "admin/pages/base/teacher";
+	}
+	@RequestMapping("pages/base/teacherMine")
+	public String teacherMine(){
+		return "admin/pages/base/teacherMine";
 	}
 	@RequestMapping("pages/base/user")
 	public String user(){
@@ -97,6 +109,10 @@ public class FamEdu {
 	@RequestMapping("pages/base/admin")
 	public String admin2(){
 		return "admin/pages/base/admin";
+	}
+	@RequestMapping("pages/base/teachLookChoose")
+	public String teachLookChoose(){
+		return "admin/pages/base/teachLookChoose";
 	}
 	@RequestMapping("home")
 	public String home(){

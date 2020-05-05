@@ -5,15 +5,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.zerasi.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zerasi.entity.Course;
-import com.zerasi.entity.CourseExample;
-import com.zerasi.entity.User;
-import com.zerasi.entity.UserCourse;
-import com.zerasi.entity.UserCourseExample;
 import com.zerasi.entity.CourseExample.Criteria;
 import com.zerasi.service.CourseService;
 import com.zerasi.utils.PageResult;
@@ -58,8 +55,23 @@ public class CourseController {
 			return new Result(false, "失败");
 		}
 	}
-	
-	
+
+	@RequestMapping("addMine")
+	public Result addMine(Course Course,HttpServletRequest request){
+		try {
+			Teacher teacherExist = (Teacher) request.getSession().getAttribute("Teacher");
+			Course.setTch_id(teacherExist.getId());
+			if(Course.getId()==null){
+				this.CourseService.add(Course);
+			}else{
+				this.CourseService.update(Course);
+			}
+			return new Result(true, "成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Result(false, "失败");
+		}
+	}
 	
 	
 	@RequestMapping("logout")
@@ -75,16 +87,17 @@ public class CourseController {
 	
 	
 	@RequestMapping("xuanke")
-	public Result xuanke(HttpServletRequest request,Integer id){
+	public Result xuanke(HttpServletRequest request,@RequestBody UserCourse userCourse){
 		User user = (User) request.getSession().getAttribute("user");
-		UserCourseExample example = new UserCourseExample();
-		example.createCriteria().andUidEqualTo(user.getId()).andCour_idEqualTo(id);
-		List<UserCourse> list = this.CourseService.findUserCourse(example);
-		if(list.size()>0){
+		/*if(list.size()>0){
 			return new Result(false, "该课程选过了");
-		}
+		}*/
 		try {
-			this.CourseService.addUserCourse(user,id);
+			userCourse.setStart_date(userCourse.getStart_date().replace("T"," "));
+			userCourse.setEnd_date(userCourse.getEnd_date().replace("T"," "));
+			userCourse.setUid(user.getId());
+			userCourse.setStatus_cd("0");
+			this.CourseService.addUserCourse(userCourse);
 			return new Result(true, "选课成功");
 		} catch (Exception e) {
 			return new Result(true, "选课失败");
@@ -102,6 +115,13 @@ public class CourseController {
 		}
 		return null;
 	}
+
+	@RequestMapping("teachLookChoose")
+	public PageResult teachLookChoose(HttpServletRequest request,Course Course,Integer page,Integer rows){
+		Teacher teacher = (Teacher) request.getSession().getAttribute("Teacher");
+		return this.CourseService.teachLookChoose(teacher,page,rows);
+	}
+
 	@RequestMapping("commentTeacher")
 	public Result commentTeacher(HttpServletRequest request,Integer tch_id){
 		User user = (User) request.getSession().getAttribute("user");
@@ -136,6 +156,15 @@ public class CourseController {
 		}
 		return this.CourseService.findPage(example,page,rows);
 	}
+
+	@RequestMapping("findPageMine")
+	public PageResult findPageMine(Course Course,Integer page,Integer rows,HttpServletRequest request){
+		CourseExample example = new CourseExample();
+		Criteria createCriteria = example.createCriteria();
+		Teacher teacherExist = (Teacher) request.getSession().getAttribute("Teacher");
+		createCriteria.andTch_idEqualTo(teacherExist.getId());
+		return this.CourseService.findPage(example,page,rows);
+	}
 	
 	@RequestMapping("findOne")
 	public Course findOne(Integer id){
@@ -153,7 +182,18 @@ public class CourseController {
 			return new Result(false, "修改失败");
 		}
 	}
-	
+
+	@RequestMapping("userCourseStatus")
+	public Result userCourseStatus( UserCourse userCourse){
+		try {
+			this.CourseService.userCourseStatus(userCourse);
+			return new Result(true, "修改成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Result(false, "修改失败");
+		}
+	}
+
 	@RequestMapping(value="delete")
 	public Result delete(String ids){
 		

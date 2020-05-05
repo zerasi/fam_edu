@@ -1,23 +1,17 @@
 package com.zerasi.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.zerasi.dao.*;
+import com.zerasi.entity.*;
+import com.zerasi.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.zerasi.dao.CategoryMapper;
-import com.zerasi.dao.CourseMapper;
-import com.zerasi.dao.TeacherMapper;
-import com.zerasi.dao.UserCourseMapper;
-import com.zerasi.entity.Category;
-import com.zerasi.entity.Course;
-import com.zerasi.entity.CourseExample;
-import com.zerasi.entity.User;
-import com.zerasi.entity.UserCourse;
-import com.zerasi.entity.UserCourseExample;
 import com.zerasi.service.CourseService;
 import com.zerasi.utils.PageResult;
 
@@ -38,6 +32,9 @@ public class CouseServiceImpl implements CourseService{
 
 	@Autowired
 	private UserCourseMapper ucMapper;
+
+	@Autowired
+	private UserMapper userMapper;
 
 	@Override
 	public void add(Course Course) {
@@ -104,10 +101,9 @@ public class CouseServiceImpl implements CourseService{
 	}
 
 	@Override
-	public void addUserCourse(User user, Integer id) {
-		UserCourse userCourse = new UserCourse();
-		userCourse.setCour_id(id);
-		userCourse.setUid(user.getId());
+	public void addUserCourse(UserCourse userCourse) {
+		Course course = this.CourseMapper.selectByPrimaryKey(userCourse.getCour_id());
+		userCourse.setBak2((DateUtils.getHoursDateToDate(userCourse.getStart_date(),userCourse.getEnd_date()))*course.getPrice()+"");
 		this.ucMapper.insert(userCourse);
 	}
 
@@ -115,6 +111,34 @@ public class CouseServiceImpl implements CourseService{
 	public void deletechoose(Integer id) {
 		this.ucMapper.deleteByPrimaryKey(id);
 		
+	}
+
+	@Override
+	public PageResult teachLookChoose(Teacher teacher, Integer page, Integer rows) {
+
+		CourseExample courseExample = new CourseExample();
+		courseExample.createCriteria().andTch_idEqualTo(teacher.getId());
+		List<Course> courses = this.CourseMapper.selectByExample(courseExample);
+		List<Integer> courseInt = new ArrayList<>();
+		for (Course course: courses){
+			courseInt.add(course.getId());
+		}
+
+		UserCourseExample userCourseExample = new UserCourseExample();
+		userCourseExample.createCriteria().andCour_idIn(courseInt);
+		PageHelper.startPage(page,rows);
+		Page<UserCourse> pages = (Page<UserCourse>)this.ucMapper.selectByExample(userCourseExample);
+		List<UserCourse> list = pages.getResult();
+		list.forEach(p ->{
+			p.setUser(this.userMapper.selectByPrimaryKey(p.getUid()));
+			p.setCourse(this.CourseMapper.selectByPrimaryKey(p.getCour_id()));
+		});
+		return new PageResult(pages.getTotal(), pages.getResult());
+	}
+
+	@Override
+	public void userCourseStatus(UserCourse userCourse) {
+		this.ucMapper.updateByPrimaryKeySelective(userCourse);
 	}
 
 }
